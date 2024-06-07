@@ -17,26 +17,24 @@
 # enterprise edition license of COSMOS if purchased from the
 # copyright holder
 
-# Create the overall gemspec
-spec = Gem::Specification.new do |s|
-  s.name = 'cosmosc2-tool-planetviewer'
-  s.summary = 'Ball Aerospace COSMOS'
-  s.description = <<-EOF
-    This plugin adds the COSMOS planetviewer tool
-  EOF
-  s.authors = ['Ryan Melton', 'Jason Thomas']
-  s.email = ['rmelton@ball.com', 'jmthomas@ball.com']
-  s.homepage = 'https://github.com/BallAerospace/COSMOS'
+PLUGIN_NAME = Dir['*.gemspec'][0].split('.')[0..-2].join('.')
 
-  s.platform = Gem::Platform::RUBY
-
-  time = Time.now.strftime("%Y%m%d%H%M%S")
+task :require_version do
   if ENV['VERSION']
-    s.version = ENV['VERSION'].dup + ".#{time}"
+    if ENV['VERSION'] =~ /-/
+      # Add Timestamp to prerelease versions
+      ENV['VERSION'] = ENV['VERSION'] + "." + Time.now.utc.strftime("%Y%m%d%H%M%S")
+    end
   else
-    s.version = '0.0.0' + ".#{time}"
+    puts "VERSION is required: rake <task> VERSION=X.X.X"
+    exit 1
   end
-  s.license = 'AGPL-3.0'
+end
 
-  s.files = Dir.glob("{targets,lib,procedures,tools,microservices}/**/*") + %w(Rakefile LICENSE.txt README.md plugin.txt)
+task :build => [:require_version] do
+  _, platform, *_ = RUBY_PLATFORM.split("-")
+  if platform == 'mswin32' or platform == 'mingw32'
+    puts "Warning: Building gem on Windows will lose file permissions"
+  end
+  system("gem build #{PLUGIN_NAME}")
 end

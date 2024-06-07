@@ -71,7 +71,7 @@
 </template>
 
 <script>
-import Api from '@cosmosc2/tool-common/src/services/api'
+import Api from '@openc3/tool-common/src/services/api'
 
 export default {
   props: {

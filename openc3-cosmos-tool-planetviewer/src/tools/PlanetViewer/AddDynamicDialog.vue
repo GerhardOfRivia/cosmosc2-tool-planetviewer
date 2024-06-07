@@ -67,7 +67,9 @@
                 />
               </v-row>
               <v-row no-gutters>
-                <v-col v-text="`Description: ${selectedItemX.description}`" />
+                <v-col>
+                  Description: {{ selectedItemX.description }}
+                </v-col>
               </v-row>
               <v-row class="my-2">
                 <v-select
@@ -83,7 +85,9 @@
                 />
               </v-row>
               <v-row no-gutters>
-                <v-col v-text="`Description: ${selectedItemY.description}`" />
+                <v-col>
+                  Description: {{ selectedItemY.description }}
+                </v-col>
               </v-row>
               <v-row class="my-2">
                 <v-select
@@ -99,7 +103,9 @@
                 />
               </v-row>
               <v-row no-gutters>
-                <v-col v-text="`Description: ${selectedItemZ.description}`" />
+                <v-col>
+                  Description: {{ selectedItemZ.description }}
+                </v-col>
               </v-row>
               <v-row class="mx-2 mb-2">
                 <v-radio-group
@@ -166,7 +172,7 @@
                       @click="resolution = kvp.key"
                       data-test="type-dynamic"
                     >
-                      <v-list-item-title v-text="kvp.value" />
+                      <v-list-item-title> {{ kvp.value }} </v-list-item-title>
                     </v-list-item>
                   </v-list>
                 </v-menu>
@@ -325,8 +331,8 @@
 </template>
 
 <script>
-import { CosmosApi } from '@cosmosc2/tool-common/src/services/cosmos-api'
-import TargetPacketItemChooser from '@cosmosc2/tool-common/src/components/TargetPacketItemChooser'
+import { OpenC3Api } from '@openc3/tool-common/src/services/openc3-api'
+import TargetPacketItemChooser from '@openc3/tool-common/src/components/TargetPacketItemChooser'
 
 export default {
   components: {
@@ -381,7 +387,7 @@ export default {
     }
   },
   created() {
-    this.api = new CosmosApi()
+    this.api = new OpenC3Api()
     try {
       this.api.get_all_tlm_info()
     } catch {}

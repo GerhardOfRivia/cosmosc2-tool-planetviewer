@@ -9,7 +9,8 @@ This plugin provides the COSMOS PlanetViewer Tool
 Yarn and cesium are not working so make sure to nohoist the cesium package
 
 package.json
-```
+
+```json
   "workspaces": {
     "packages": [
       "packages/*"

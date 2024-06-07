@@ -93,7 +93,7 @@
 </template>
 
 <script>
-import { CosmosApi } from '@cosmosc2/tool-common/src/services/cosmos-api'
+import { OpenC3Api } from '@openc3/tool-common/src/services/openc3-api'
 
 export default {
   props: {
@@ -125,7 +125,7 @@ export default {
     }
   },
   created: function () {
-    new CosmosApi()
+    new OpenC3Api()
       .list_configs(this.tool)
       .then((response) => {
         this.text = response.data

@@ -94,11 +94,11 @@
 </template>
 
 <script>
-import { CosmosApi } from '@cosmosc2/tool-common/src/services/cosmos-api'
-import Cable from '@cosmosc2/tool-common/src/services/cable.js'
-import TopBar from '@cosmosc2/tool-common/src/components/TopBar'
-import OpenConfigDialog from '@cosmosc2/tool-common/src/components/OpenConfigDialog'
-import SaveConfigDialog from '@cosmosc2/tool-common/src/components/SaveConfigDialog'
+import { OpenC3Api } from '@openc3/tool-common/src/services/openc3-api'
+import Cable from '@openc3/tool-common/src/services/cable.js'
+import TopBar from '@openc3/tool-common/src/components/TopBar'
+import OpenConfigDialog from '@openc3/tool-common/src/components/config/OpenConfigDialog'
+import SaveConfigDialog from '@openc3/tool-common/src/components/config/SaveConfigDialog'
 
 import AddCzmlDialog from '@/tools/PlanetViewer/AddCzmlDialog'
 import AddDynamicDialog from '@/tools/PlanetViewer/AddDynamicDialog'
@@ -629,7 +629,7 @@ export default {
     },
     openConfiguration: function (name) {
       localStorage['lastconfig__planet_viewer'] = name
-      new CosmosApi()
+      new OpenC3Api()
         .load_config(this.toolName, name)
         .then((response) => {
           this.clearVisuals()
@@ -666,7 +666,7 @@ export default {
         config: this.config,
       }
       // console.log(config)
-      new CosmosApi()
+      new OpenC3Api()
         .save_config(this.toolName, name, JSON.stringify(config))
         .then((response) => {
           // console.log(response)
