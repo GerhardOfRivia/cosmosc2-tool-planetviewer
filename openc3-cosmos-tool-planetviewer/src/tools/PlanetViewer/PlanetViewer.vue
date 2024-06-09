@@ -122,6 +122,7 @@ import {
   PathGraphics,
   PointGraphics,
   SampledPositionProperty,
+  ImageryLayer,
   TileMapServiceImageryProvider,
   Viewer,
 } from 'cesium'
@@ -432,9 +433,11 @@ export default {
 
       this.viewer = new Viewer('cesiumContainer', {
         clockViewModel: new ClockViewModel(clock),
-        imageryProvider: new TileMapServiceImageryProvider({
-          url: buildModuleUrl(this.imageryProviderUrl),
-        }),
+        baseLayer: ImageryLayer.fromProviderAsync(
+          TileMapServiceImageryProvider.fromUrl(
+            buildModuleUrl(this.imageryProviderUrl)
+          )
+        ),
         baseLayerPicker: false,
         geocoder: false,
         timeline: this.rewatchEnabled,
