@@ -35,70 +35,70 @@
       <v-progress-circular indeterminate size="64" />
     </v-overlay>
     <top-bar :menus="menus" :title="title" />
-    <div v-if="mode === 'export'">
-      <!--- TODO --->
+    <div style="max-height: 100%">
+      <div id="cesiumContainer"></div>
+      <imagery-provider-dialog
+        v-model="imageryProviderDialog"
+        :url="imageryProviderUrl"
+        @alert="alertHandler"
+        @url="urlHandler"
+      />
+      <rewatch-dialog
+        v-model="rewatchDialog"
+        @alert="alertHandler"
+        @time="timeHandler"
+      />
+      <add-czml-dialog
+        v-model="czmlDialog"
+        @alert="alertHandler"
+        @load="czmlHandler"
+      />
+      <add-static-dialog
+        v-model="addStaticDialog"
+        @alert="alertHandler"
+        @create="createHandler"
+        :mode="mode"
+        :visuals="visuals"
+      />
+      <add-dynamic-dialog
+        v-model="addDynamicDialog"
+        @alert="alertHandler"
+        @create="createHandler"
+        :mode="mode"
+        :visuals="visuals"
+      />
+      <visuals-dialog
+        v-model="viewDialog"
+        @alert="alertHandler"
+        @update="updateHandler"
+        :mode="mode"
+        :visuals="visuals"
+      />
+      <open-config-dialog
+        v-if="openConfig"
+        v-model="openConfig"
+        :tool="toolName"
+        @success="openConfiguration($event)"
+      />
+      <save-config-dialog
+        v-if="saveConfig"
+        v-model="saveConfig"
+        :tool="toolName"
+        @success="saveConfiguration($event)"
+      />
+      <footer>
+        <v-divider></v-divider>
+      </footer>
     </div>
-    <div v-else>
-      <div id="cesiumContainer" style="max-height: 100%" />
-    </div>
-    <imagery-provider-dialog
-      v-model="imageryProviderDialog"
-      :url="imageryProviderUrl"
-      @alert="alertHandler"
-      @url="urlHandler"
-    />
-    <rewatch-dialog
-      v-model="rewatchDialog"
-      @alert="alertHandler"
-      @time="timeHandler"
-    />
-    <add-czml-dialog
-      v-model="czmlDialog"
-      @alert="alertHandler"
-      @load="czmlHandler"
-    />
-    <add-static-dialog
-      v-model="addStaticDialog"
-      @alert="alertHandler"
-      @create="createHandler"
-      :mode="mode"
-      :visuals="visuals"
-    />
-    <add-dynamic-dialog
-      v-model="addDynamicDialog"
-      @alert="alertHandler"
-      @create="createHandler"
-      :mode="mode"
-      :visuals="visuals"
-    />
-    <visuals-dialog
-      v-model="viewDialog"
-      @alert="alertHandler"
-      @update="updateHandler"
-      :mode="mode"
-      :visuals="visuals"
-    />
-    <open-config-dialog
-      v-if="openConfig"
-      v-model="openConfig"
-      :tool="toolName"
-      @success="openConfiguration($event)"
-    />
-    <save-config-dialog
-      v-if="saveConfig"
-      v-model="saveConfig"
-      :tool="toolName"
-      @success="saveConfiguration($event)"
-    />
   </div>
 </template>
 
 <script>
-import { OpenC3Api } from '@openc3/tool-common/src/services/openc3-api'
-import Cable from '@openc3/tool-common/src/services/cable.js'
 import TopBar from '@openc3/tool-common/src/components/TopBar'
 import OpenConfigDialog from '@openc3/tool-common/src/components/config/OpenConfigDialog'
 import SaveConfigDialog from '@openc3/tool-common/src/components/config/SaveConfigDialog'
+import Cable from '@openc3/tool-common/src/services/cable.js'
+import { OpenC3Api } from '@openc3/tool-common/src/services/openc3-api'
 
 import AddCzmlDialog from '@/tools/PlanetViewer/AddCzmlDialog'
 import AddDynamicDialog from '@/tools/PlanetViewer/AddDynamicDialog'
@@ -108,7 +108,6 @@ import RewatchDialog from '@/tools/PlanetViewer/RewatchDialog'
 import VisualsDialog from '@/tools/PlanetViewer/VisualsDialog'
 
 import {
-  buildModuleUrl,
   Cartesian3,
   Clock,
   ClockRange,
@@ -118,13 +117,14 @@ import {
   ColorMaterialProperty,
   CustomDataSource,
   CzmlDataSource,
+  ImageryLayer,
   JulianDate,
   PathGraphics,
   PointGraphics,
   SampledPositionProperty,
-  ImageryLayer,
   TileMapServiceImageryProvider,
   Viewer,
+  buildModuleUrl,
 } from 'cesium'
 import 'cesium/Build/Cesium/Widgets/widgets.css'
 
@@ -265,17 +265,17 @@ export default {
   },
   created: function () {
     this.cable
-      .createSubscription('StreamingChannel', localStorage.scope, {
+      .createSubscription('StreamingChannel', window.openc3scope, {
         received: (data) => this.received(data),
         disconnected: () => {
           this.alertHandler({
-            text: 'COSMOS backend connection disconnected.',
+            text: 'OpenC3 backend connection disconnected.',
             type: 'error',
           })
         },
         rejected: () => {
           this.alertHandler({
-            text: 'COSMOS backend connection rejected.',
+            text: 'OpenC3 backend connection rejected.',
             type: 'error',
           })
         },
@@ -416,12 +416,8 @@ export default {
       }
 
       const clock = new Clock({
-        startTime: this.rewatchEnabled
-          ? JulianDate.fromDate(new Date(this.startDateTime))
-          : undefined,
-        stopTime: this.rewatchEnabled
-          ? JulianDate.fromDate(new Date(this.stopDateTime))
-          : undefined,
+        startTime: this.rewatchEnabled ? JulianDate.fromDate(new Date(this.startDateTime)) : undefined,
+        stopTime: this.rewatchEnabled ? JulianDate.fromDate(new Date(this.stopDateTime)) : undefined,
         currentTime: this.rewatchEnabled
           ? JulianDate.fromDate(new Date(this.startDateTime))
           : JulianDate.fromDate(new Date()),
@@ -434,9 +430,7 @@ export default {
       this.viewer = new Viewer('cesiumContainer', {
         clockViewModel: new ClockViewModel(clock),
         baseLayer: ImageryLayer.fromProviderAsync(
-          TileMapServiceImageryProvider.fromUrl(
-            buildModuleUrl(this.imageryProviderUrl)
-          )
+          TileMapServiceImageryProvider.fromUrl(buildModuleUrl(this.imageryProviderUrl)),
         ),
         baseLayerPicker: false,
         geocoder: false,
@@ -447,7 +441,7 @@ export default {
       })
 
       this.viewer.scene.globe.enableLighting = true
-      this.dataSource = new CustomDataSource('cosmos')
+      this.dataSource = new CustomDataSource('OpenC3')
       this.viewer.dataSources.add(this.dataSource)
     },
     createDynamicHandler: function (event) {
@@ -499,23 +493,19 @@ export default {
       const visual = {
         ...event,
         items: [
-          `tlm__${event.targetName}__${event.packetName}__${event.itemX.name}__CONVERTED`,
-          `tlm__${event.targetName}__${event.packetName}__${event.itemY.name}__CONVERTED`,
-          `tlm__${event.targetName}__${event.packetName}__${event.itemZ.name}__CONVERTED`,
+          `DECOM__TLM__${event.targetName}__${event.packetName}__${event.itemX.name}__CONVERTED`,
+          `DECOM__TLM__${event.targetName}__${event.packetName}__${event.itemY.name}__CONVERTED`,
+          `DECOM__TLM__${event.targetName}__${event.packetName}__${event.itemZ.name}__CONVERTED`,
         ],
       }
-      CosmosAuth.updateToken(CosmosAuth.defaultMinValidity).then(() => {
+      OpenC3Auth.updateToken(OpenC3Auth.defaultMinValidity).then(() => {
         visual['subscription'] = this.subscription.perform('add', {
-          scope: localStorage.scope,
-          token: localStorage.token,
+          scope: window.openc3Scope,
+          token: localStorage.openc3Token,
           mode: 'DECOM',
           items: visual.items,
-          start_time: this.rewatchEnabled
-            ? this.startDateTime * 1_000_000
-            : undefined,
-          end_time: this.rewatchEnabled
-            ? this.stopDateTime * 1_000_000
-            : undefined,
+          start_time: this.rewatchEnabled ? this.startDateTime * 1_000_000 : null,
+          end_time: this.rewatchEnabled ? this.stopDateTime * 1_000_000 : null,
         })
       })
       this.dynamicVisuals.push(visual)
@@ -546,9 +536,11 @@ export default {
       }
     },
     createStaticVisual: function (event) {
-      const position = this.convertHandlerFuntions[
-        event.cartesianOrRadiansOrDegrees
-      ](event.longitude, event.latitude, event.altitude)
+      const position = this.convertHandlerFuntions[event.cartesianOrRadiansOrDegrees](
+        event.longitude,
+        event.latitude,
+        event.altitude,
+      )
       this.dataSource.entities.add({
         id: event.name,
         position: position,
@@ -563,15 +555,13 @@ export default {
       this.addStaticDialog = false
     },
     received: function (data) {
-      const parsed = JSON.parse(data)
-      parsed.forEach((event) => {
+      this.cable.recordPing()
+      data.forEach((event) => {
         this.updateVisuals(event)
       })
     },
     updateHandler: function (event) {
-      const visual = this.typeHandlerArray[event.visualType].find(
-        (visual) => event.visualName === visual.name
-      )
+      const visual = this.typeHandlerArray[event.visualType].find((visual) => event.visualName === visual.name)
       this.eventHandlerFunctions['delete'][event.visualType](visual)
     },
     deleteVisual: function (visual) {
@@ -582,13 +572,11 @@ export default {
       this.config.splice(index, 1)
       var index = this.dynamicVisuals.indexOf(visual)
       this.dynamicVisuals.splice(index, 1)
-      this.dataSource.entities.remove(
-        this.dataSource.entities.getById(visual.name)
-      )
-      CosmosAuth.updateToken(CosmosAuth.defaultMinValidity).then(() => {
+      this.dataSource.entities.remove(this.dataSource.entities.getById(visual.name))
+      OpenC3Auth.updateToken(OpenC3Auth.defaultMinValidity).then(() => {
         this.subscription.perform('remove', {
-          scope: localStorage.scope,
-          token: localStorage.token,
+          scope: window.openc3Scope,
+          token: localStorage.openc3Token,
           items: visual.items,
         })
       })
@@ -598,9 +586,7 @@ export default {
       this.config.splice(index, 1)
       var index = this.staticVisuals.indexOf(visual)
       this.staticVisuals.splice(index, 1)
-      this.dataSource.entities.remove(
-        this.dataSource.entities.getById(visual.name)
-      )
+      this.dataSource.entities.remove(this.dataSource.entities.getById(visual.name))
     },
     updateVisuals: function (event) {
       // console.log(event)
@@ -610,12 +596,12 @@ export default {
           this.dataSource.entities
             .getById(visual.name)
             .position.addSample(
-              new JulianDate.fromDate(new Date(event.time / 1_000_000)),
+              new JulianDate.fromDate(new Date(event['__time'] / 1_000_000)),
               this.convertHandlerFuntions[visual.cartesianOrRadiansOrDegrees](
                 event[visual.items[0]],
                 event[visual.items[1]],
-                event[visual.items[2]]
-              )
+                event[visual.items[2]],
+              ),
             )
         }
       })
@@ -690,3 +676,11 @@ export default {
   },
 }
 </script>
+
+<style scoped>
+.footer {
+  bottom: 0;
+  position: sticky;
+  height: auto;
+}
+</style>

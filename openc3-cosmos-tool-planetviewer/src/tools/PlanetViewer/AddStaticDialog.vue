@@ -19,206 +19,204 @@
 
 <template>
   <div>
-    <v-dialog persistent v-model="show" width="600">
-      <v-card>
-        <v-system-bar>
-          <v-spacer />
-          <span> Add Static Visual </span>
-          <v-spacer />
-          <v-tooltip top>
-            <template v-slot:activator="{ on, attrs }">
-              <div v-on="on" v-bind="attrs">
-                <v-icon data-test="close-visual-icon" @click="cancelVisual">
-                  mdi-close-box
-                </v-icon>
-              </div>
-            </template>
-            <span> Close </span>
-          </v-tooltip>
-        </v-system-bar>
+    <v-navigation-drawer v-model="show" absolute temporary right width="600">
+      <v-system-bar>
+        <v-spacer />
+        <span> Add Static Visual </span>
+        <v-spacer />
+        <v-tooltip top>
+          <template v-slot:activator="{ on, attrs }">
+            <div v-on="on" v-bind="attrs">
+              <v-icon data-test="close-visual-icon" @click="cancelVisual">
+                mdi-close-box
+              </v-icon>
+            </div>
+          </template>
+          <span> Close </span>
+        </v-tooltip>
+      </v-system-bar>
 
-        <v-stepper v-model="dialogStep" vertical non-linear>
-          <v-stepper-step editable step="1">
-            Input Name, Description, and Location
-          </v-stepper-step>
-          <v-stepper-content step="1">
-            <v-card-text>
-              <v-row dense>
+      <v-stepper v-model="dialogStep" vertical non-linear>
+        <v-stepper-step editable step="1">
+          Input Name, Description, and Location
+        </v-stepper-step>
+        <v-stepper-content step="1">
+          <v-card-text>
+            <v-row dense>
+              <v-text-field
+                v-model="visualName"
+                type="text"
+                hint="Unique visual name"
+                :rules="[rules.required]"
+                label="Visual Name"
+                data-test="static-visual-name"
+              />
+            </v-row>
+            <v-row dense>
+              <v-text-field
+                v-model="visualDescription"
+                type="text"
+                hint="Boulder, CO USA"
+                :rules="[rules.required]"
+                label="Visual Description"
+                data-test="static-visual-description"
+              />
+            </v-row>
+            <v-row dense>
+              <v-col>
                 <v-text-field
-                  v-model="visualName"
-                  type="text"
-                  hint="Unique visual name"
+                  v-model="latitude"
+                  type="number"
                   :rules="[rules.required]"
-                  label="Visual Name"
-                  data-test="static-visual-name"
+                  label="latitude"
+                  data-test="latitude-input"
                 />
-              </v-row>
-              <v-row dense>
+              </v-col>
+              <v-col>
                 <v-text-field
-                  v-model="visualDescription"
-                  type="text"
-                  hint="Boulder, CO USA"
+                  v-model="longitude"
+                  type="number"
                   :rules="[rules.required]"
-                  label="Visual Description"
-                  data-test="static-visual-description"
+                  label="longitude"
+                  data-test="longitude-input"
                 />
-              </v-row>
-              <v-row dense>
-                <v-col>
-                  <v-text-field
-                    v-model="latitude"
-                    type="number"
-                    :rules="[rules.required]"
-                    label="latitude"
-                    data-test="latitude-input"
-                  />
-                </v-col>
-                <v-col>
-                  <v-text-field
-                    v-model="longitude"
-                    type="number"
-                    :rules="[rules.required]"
-                    label="longitude"
-                    data-test="longitude-input"
-                  />
-                </v-col>
-                <v-col>
-                  <v-text-field
-                    v-model="altitude"
-                    type="number"
-                    :rules="[rules.required]"
-                    label="altitude"
-                    data-test="altitude-input"
-                  />
-                </v-col>
-              </v-row>
-              <v-row class="mx-2 mb-2">
-                <v-radio-group
-                  v-model="cartesianOrRadiansOrDegrees"
-                  row
-                  hide-details
-                  class="mt-0"
-                >
-                  <v-radio
-                    label="Cartesian"
-                    value="cartesian"
-                    data-test="cartesian-radio"
-                  />
-                  <v-radio
-                    label="Degrees"
-                    value="degrees"
-                    data-test="degrees-radio"
-                  />
-                  <v-radio
-                    label="Radians"
-                    value="radians"
-                    data-test="radians-radio"
-                  />
-                </v-radio-group>
-              </v-row>
-              <v-row>
-                <span class="ma-2 red--text" v-show="error" v-text="error" />
-              </v-row>
-              <v-row>
-                <v-spacer />
-                <v-btn
-                  @click="dialogStep = 2"
-                  data-test="add-static-step-two-btn"
-                  color="primary"
-                  :disabled="!!error"
-                >
-                  Continue
-                </v-btn>
-              </v-row>
-            </v-card-text>
-          </v-stepper-content>
+              </v-col>
+              <v-col>
+                <v-text-field
+                  v-model="altitude"
+                  type="number"
+                  :rules="[rules.required]"
+                  label="altitude"
+                  data-test="altitude-input"
+                />
+              </v-col>
+            </v-row>
+            <v-row class="mx-2 mb-2">
+              <v-radio-group
+                v-model="cartesianOrRadiansOrDegrees"
+                row
+                hide-details
+                class="mt-0"
+              >
+                <v-radio
+                  label="Cartesian"
+                  value="cartesian"
+                  data-test="cartesian-radio"
+                />
+                <v-radio
+                  label="Degrees"
+                  value="degrees"
+                  data-test="degrees-radio"
+                />
+                <v-radio
+                  label="Radians"
+                  value="radians"
+                  data-test="radians-radio"
+                />
+              </v-radio-group>
+            </v-row>
+            <v-row>
+              <span class="ma-2 red--text" v-show="error" v-text="error" />
+            </v-row>
+            <v-row>
+              <v-spacer />
+              <v-btn
+                @click="dialogStep = 2"
+                data-test="add-static-step-two-btn"
+                color="primary"
+                :disabled="!!error"
+              >
+                Continue
+              </v-btn>
+            </v-row>
+          </v-card-text>
+        </v-stepper-content>
 
-          <v-stepper-step editable step="2"> Select Color </v-stepper-step>
-          <v-stepper-content step="2">
-            <v-card-text>
-              <v-row align="center" justify="center">
-                <v-color-picker
-                  v-model="color"
-                  hide-canvas
-                  hide-mode-switch
-                  show-swatches
-                  :swatches="swatches"
-                  mode="rgb"
-                  width="450"
-                  swatches-max-height="100"
-                />
-              </v-row>
-              <v-row>
-                <v-spacer />
-                <v-btn
-                  @click="dialogStep = 3"
-                  class="mx-1"
-                  color="primary"
-                  data-test="add-static-step-three-btn"
-                >
-                  Review
-                </v-btn>
-                <v-btn
-                  @click="cancelVisual"
-                  outlined
-                  class="mx-1"
-                  data-test="add-static-cancel-btn"
-                >
-                  Cancel
-                </v-btn>
-                <v-btn
-                  @click.prevent="createVisual"
-                  class="mx-1"
-                  color="primary"
-                  type="submit"
-                  :disabled="!!error"
-                  data-test="add-static-success-btn"
-                >
-                  Ok
-                </v-btn>
-              </v-row>
-            </v-card-text>
-          </v-stepper-content>
+        <v-stepper-step editable step="2"> Select Color </v-stepper-step>
+        <v-stepper-content step="2">
+          <v-card-text>
+            <v-row align="center" justify="center">
+              <v-color-picker
+                v-model="color"
+                hide-canvas
+                hide-mode-switch
+                show-swatches
+                :swatches="swatches"
+                mode="rgb"
+                width="450"
+                swatches-max-height="100"
+              />
+            </v-row>
+            <v-row>
+              <v-spacer />
+              <v-btn
+                @click="dialogStep = 3"
+                class="mx-1"
+                color="primary"
+                data-test="add-static-step-three-btn"
+              >
+                Review
+              </v-btn>
+              <v-btn
+                @click="cancelVisual"
+                outlined
+                class="mx-1"
+                data-test="add-static-cancel-btn"
+              >
+                Cancel
+              </v-btn>
+              <v-btn
+                @click.prevent="createVisual"
+                class="mx-1"
+                color="primary"
+                type="submit"
+                :disabled="!!error"
+                data-test="add-static-success-btn"
+              >
+                Ok
+              </v-btn>
+            </v-row>
+          </v-card-text>
+        </v-stepper-content>
 
-          <v-stepper-step editable step="3"> Review </v-stepper-step>
-          <v-stepper-content step="3">
-            <v-card-text>
-              <v-row>
-                <v-textarea
-                  readonly
-                  rows="8"
-                  :value="JSON.stringify(event, null, '\t')"
-                />
-              </v-row>
-              <v-row>
-                <span class="ma-2 red--text" v-show="error" v-text="error" />
-              </v-row>
-              <v-row>
-                <v-spacer />
-                <v-btn
-                  @click="cancelVisual"
-                  outlined
-                  class="mx-1"
-                  data-test="add-static-cancel-btn"
-                >
-                  Cancel
-                </v-btn>
-                <v-btn
-                  @click.prevent="createVisual"
-                  class="mx-1"
-                  color="primary"
-                  type="submit"
-                  :disabled="!!error"
-                  data-test="add-static-success-btn"
-                >
-                  Ok
-                </v-btn>
-              </v-row>
-            </v-card-text>
-          </v-stepper-content>
-        </v-stepper>
-      </v-card>
-    </v-dialog>
+        <v-stepper-step editable step="3"> Review </v-stepper-step>
+        <v-stepper-content step="3">
+          <v-card-text>
+            <v-row>
+              <v-textarea
+                readonly
+                rows="8"
+                :value="JSON.stringify(event, null, '\t')"
+              />
+            </v-row>
+            <v-row>
+              <span class="ma-2 red--text" v-show="error" v-text="error" />
+            </v-row>
+            <v-row>
+              <v-spacer />
+              <v-btn
+                @click="cancelVisual"
+                outlined
+                class="mx-1"
+                data-test="add-static-cancel-btn"
+              >
+                Cancel
+              </v-btn>
+              <v-btn
+                @click.prevent="createVisual"
+                class="mx-1"
+                color="primary"
+                type="submit"
+                :disabled="!!error"
+                data-test="add-static-success-btn"
+              >
+                Ok
+              </v-btn>
+            </v-row>
+          </v-card-text>
+        </v-stepper-content>
+      </v-stepper>
+    </v-navigation-drawer>
   </div>
 </template>
 

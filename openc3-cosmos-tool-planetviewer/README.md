@@ -2,6 +2,17 @@
 
 This plugin provides the OpenC3 COSMOS PlanetViewer Tool
 
+## Upgrading to docker compose v2
+
+```sh
+COMPOSE_VERSION=$(curl -s https://api.github.com/repos/docker/compose/releases/latest | jq -r '.tag_name')
+
+DOCKER_CONFIG=${DOCKER_CONFIG:-$HOME/.docker}
+mkdir -p $DOCKER_CONFIG/cli-plugins
+curl -SL https://github.com/docker/compose/releases/download/$COMPOSE_VERSION/docker-compose-linux-x86_64 -o $DOCKER_CONFIG/cli-plugins/docker-compose
+chmod +x $DOCKER_CONFIG/cli-plugins/docker-compose
+```
+
 ## Getting Started
 
 Yarn and cesium are not working so make sure to nohoist the cesium package
@@ -19,7 +30,7 @@ package.json
   },
 ```
 
-## Dockerfile
+## Building in the openc3/cosmos/openc3-cosmos-init dir
 
 to test internal to openc3-cosmos you can update `openc3-cosmos-init/Dockerfile`
 
@@ -66,4 +77,10 @@ index aab4448f2..d06602429 100755
  if [ -z $OPENC3_NO_TLMVIEWER ]; then
      ruby /openc3/bin/openc3cli load /openc3/plugins/gems/openc3-cosmos-tool-tlmviewer-*.gem || exit 1
  fi
+```
+
+## use rsync
+
+```sh
+rsync -ru ../cosmosc2-tool-planetviewer/openc3-cosmos-tool-planetviewer/ openc3-cosmos-init/plugins/packages/openc3-cosmos-tool-planetviewer/
 ```

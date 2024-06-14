@@ -18,87 +18,85 @@
 -->
 
 <template>
-  <v-dialog v-model="show" width="600">
-    <v-card>
-      <v-form ref="form" @submit.prevent="submitRewatch">
-        <v-system-bar>
-          <v-spacer />
-          <span> Enable Rewatch Mode </span>
-          <v-spacer />
-        </v-system-bar>
-        <v-card-text>
-          <div class="pa-3">
-            <v-row dense>
-              <v-text-field
-                v-model="startDate"
-                class="mx-1"
-                type="date"
-                label="Start Date"
-                :rules="[rules.required]"
-                data-test="start-date"
-              />
-              <v-text-field
-                v-model="startTime"
-                class="mx-1"
-                type="time"
-                label="Start Time"
-                :rules="[rules.required]"
-                data-test="start-time"
-              />
-            </v-row>
-            <v-row dense>
-              <v-text-field
-                v-model="stopDate"
-                class="mx-1"
-                type="date"
-                label="Stop Date"
-                :rules="[rules.required]"
-                data-test="stop-date"
-              />
-              <v-text-field
-                v-model="stopTime"
-                class="mx-1"
-                type="time"
-                label="Stop Time"
-                :rules="[rules.required]"
-                data-test="stop-time"
-              />
-            </v-row>
-            <v-row dense>
-              <v-radio-group v-model="utcOrLocal" row hide-details class="mt-0">
-                <v-radio label="LST" value="loc" data-test="lst-radio" />
-                <v-radio label="UTC" value="utc" data-test="utc-radio" />
-              </v-radio-group>
-            </v-row>
-            <v-row>
-              <span class="ma-2 red--text" v-show="error" v-text="error" />
-            </v-row>
-            <v-row>
-              <v-spacer />
-              <v-btn
-                @click="cancelRewatch"
-                outlined
-                class="mx-2"
-                data-test="rewatch-cancel-btn"
-              >
-                Cancel
-              </v-btn>
-              <v-btn
-                @click.prevent="submitRewatch"
-                class="mx-2"
-                color="primary"
-                type="submit"
-                :disabled="!!error"
-                data-test="rewatch-success-btn"
-              >
-                Ok
-              </v-btn>
-            </v-row>
-          </div>
-        </v-card-text>
-      </v-form>
-    </v-card>
-  </v-dialog>
+  <v-navigation-drawer v-model="show" absolute temporary right width="600">
+    <v-form ref="form" @submit.prevent="submitRewatch">
+      <v-system-bar>
+        <v-spacer />
+        <span> Enable Rewatch Mode </span>
+        <v-spacer />
+      </v-system-bar>
+      <v-card-text>
+        <div class="pa-3">
+          <v-row dense>
+            <v-text-field
+              v-model="startDate"
+              class="mx-1"
+              type="date"
+              label="Start Date"
+              :rules="[rules.required]"
+              data-test="start-date"
+            />
+            <v-text-field
+              v-model="startTime"
+              class="mx-1"
+              type="time"
+              label="Start Time"
+              :rules="[rules.required]"
+              data-test="start-time"
+            />
+          </v-row>
+          <v-row dense>
+            <v-text-field
+              v-model="stopDate"
+              class="mx-1"
+              type="date"
+              label="Stop Date"
+              :rules="[rules.required]"
+              data-test="stop-date"
+            />
+            <v-text-field
+              v-model="stopTime"
+              class="mx-1"
+              type="time"
+              label="Stop Time"
+              :rules="[rules.required]"
+              data-test="stop-time"
+            />
+          </v-row>
+          <v-row dense>
+            <v-radio-group v-model="utcOrLocal" row hide-details class="mt-0">
+              <v-radio label="LST" value="loc" data-test="lst-radio" />
+              <v-radio label="UTC" value="utc" data-test="utc-radio" />
+            </v-radio-group>
+          </v-row>
+          <v-row>
+            <span class="ma-2 red--text" v-show="error" v-text="error" />
+          </v-row>
+          <v-row>
+            <v-spacer />
+            <v-btn
+              @click="cancelRewatch"
+              outlined
+              class="mx-2"
+              data-test="rewatch-cancel-btn"
+            >
+              Cancel
+            </v-btn>
+            <v-btn
+              @click.prevent="submitRewatch"
+              class="mx-2"
+              color="primary"
+              type="submit"
+              :disabled="!!error"
+              data-test="rewatch-success-btn"
+            >
+              Ok
+            </v-btn>
+          </v-row>
+        </div>
+      </v-card-text>
+    </v-form>
+  </v-navigation-drawer>
 </template>
 
 <script>

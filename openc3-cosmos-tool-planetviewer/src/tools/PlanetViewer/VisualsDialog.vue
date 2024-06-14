@@ -18,78 +18,76 @@
 -->
 
 <template>
-  <v-dialog v-model="show" width="600">
-    <v-card>
-      <v-system-bar>
-        <v-spacer />
-        <span> Visuals </span>
-        <v-spacer />
-      </v-system-bar>
+  <v-navigation-drawer v-model="show" absolute temporary right width="600">
+    <v-system-bar>
+      <v-spacer />
+      <span> Visuals </span>
+      <v-spacer />
+    </v-system-bar>
 
-      <v-card-text>
-        <div class="pa-3">
-          <v-row class="mb-2">
-            <v-text-field
-              label="search"
-              v-model="search"
-              type="text"
-              data-test="search"
-              prepend-icon="mdi-magnify"
-              clear-icon="mdi-close-circle-outline"
-              clearable
-              single-line
-              hide-details
-            />
-          </v-row>
-          <v-data-table
-            single-expand
-            show-expand
-            item-key="name"
-            :expanded.sync="expanded"
-            :headers="visualHeaders"
-            :items="visuals"
-            :search="search"
-            :items-per-page="5"
-            :footer-props="{
-              'items-per-page-options': [5],
-            }"
-          >
-            <template v-slot:item.actions="{ item }">
-              <v-tooltip top>
-                <template v-slot:activator="{ on, attrs }">
-                  <div v-on="on" v-bind="attrs">
-                    <v-btn
-                      icon
-                      data-test="delete-visual-icon"
-                      @click="() => deleteVisual(item)"
-                    >
-                      <v-icon> mdi-delete </v-icon>
-                    </v-btn>
-                  </div>
-                </template>
-                <span> Delete Visual </span>
-              </v-tooltip>
-            </template>
-            <template v-slot:expanded-item="{ headers, item }">
-              <td :colspan="headers.length">
-                <v-textarea
-                  readonly
-                  rows="8"
-                  :value="JSON.stringify(item, null, '\t')"
-                />
-              </td>
-            </template>
-            <template v-slot:no-data>
-              <span>Currently no visuals</span>
-            </template>
-          </v-data-table>
-          <v-row>
-            <span class="ma-2 red--text" v-show="text" v-text="text" />
-          </v-row>
-        </div>
-      </v-card-text>
-    </v-card>
-  </v-dialog>
+    <v-card-text>
+      <div class="pa-3">
+        <v-row class="mb-2">
+          <v-text-field
+            label="search"
+            v-model="search"
+            type="text"
+            data-test="search"
+            prepend-icon="mdi-magnify"
+            clear-icon="mdi-close-circle-outline"
+            clearable
+            single-line
+            hide-details
+          />
+        </v-row>
+        <v-data-table
+          single-expand
+          show-expand
+          item-key="name"
+          :expanded.sync="expanded"
+          :headers="visualHeaders"
+          :items="visuals"
+          :search="search"
+          :items-per-page="5"
+          :footer-props="{
+            'items-per-page-options': [5],
+          }"
+        >
+          <template v-slot:item.actions="{ item }">
+            <v-tooltip top>
+              <template v-slot:activator="{ on, attrs }">
+                <div v-on="on" v-bind="attrs">
+                  <v-btn
+                    icon
+                    data-test="delete-visual-icon"
+                    @click="() => deleteVisual(item)"
+                  >
+                    <v-icon> mdi-delete </v-icon>
+                  </v-btn>
+                </div>
+              </template>
+              <span> Delete Visual </span>
+            </v-tooltip>
+          </template>
+          <template v-slot:expanded-item="{ headers, item }">
+            <td :colspan="headers.length">
+              <v-textarea
+                readonly
+                rows="8"
+                :value="JSON.stringify(item, null, '\t')"
+              />
+            </td>
+          </template>
+          <template v-slot:no-data>
+            <span>Currently no visuals</span>
+          </template>
+        </v-data-table>
+        <v-row>
+          <span class="ma-2 red--text" v-show="text" v-text="text" />
+        </v-row>
+      </div>
+    </v-card-text>
+  </v-navigation-drawer>
 </template>
 
 <script>
@@ -131,7 +129,7 @@ export default {
         this.text = response.data
       })
       .catch((error) => {
-        this.text = `Failed to connect to Cosmos. ${error}`
+        this.text = `Failed to connect to OpenC3. ${error}`
       })
   },
   computed: {
