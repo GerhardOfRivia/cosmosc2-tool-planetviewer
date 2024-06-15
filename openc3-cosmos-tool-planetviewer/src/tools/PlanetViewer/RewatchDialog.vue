@@ -155,8 +155,8 @@ export default {
     },
     submitRewatch: function () {
       const timeObject = {
-        start: new Date(this.startDate + 'T' + this.startTime).getTime(),
-        stop: new Date(this.stopDate + 'T' + this.stopTime).getTime(),
+        start: new Date(`${this.startDate}T${this.startTime}`).getTime(),
+        stop: new Date(`${this.stopDate}T${this.stopTime}`).getTime(),
       }
       this.$emit('time', timeObject)
     },

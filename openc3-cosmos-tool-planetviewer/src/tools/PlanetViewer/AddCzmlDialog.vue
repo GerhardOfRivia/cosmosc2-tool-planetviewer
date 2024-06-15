@@ -94,6 +94,8 @@
 </template>
 
 <script>
+import { validate } from 'webpack';
+
 export default {
   props: {
     value: Boolean, // value is the default prop when using v-model
@@ -151,21 +153,39 @@ export default {
       const fileReader = new FileReader()
       fileReader.readAsText(this.file)
       this.readingFile = true
-      const that = this
-      fileReader.onerror = function () {
-        that.readerError = ''
-        that.readingFile = false
-        that.file = null
-        that.expansionIcon = 'mdi-alert-circle'
+      fileReader.onerror = () => {
+        this.readerError = fileReader.error
+        this.readingFile = false
+        this.file = null
+        this.expansionIcon = 'mdi-alert-circle'
       }
-      fileReader.onload = function () {
-        that.readingFile = false
-        that.czml = fileReader.result
-        that.file = null
-        that.disabled = false
-        that.expansionIcon = 'mdi-check'
+      fileReader.onload = () => {
+        this.readingFile = false
+        this.czml = this.validateCzml(fileReader.result)
+        this.file = null
+        this.disabled = false
+        this.expansionIcon = 'mdi-check'
       }
     },
+    validateCzml: (results) => {
+      if (results.constructor.name !== 'Array') {
+        this.readerError = 'failed to validate: czml document not formatted in an Array'
+        return null
+      }
+      const ids = {};
+      for (const item of results) {
+        if (!!item.id && !!item.name) {
+          this.readerError = 'failed to validate: czml object missing id and name fields'
+          return null
+        }
+        ids[item.id] = 1
+        if (item.parent && !{}.hasOwnProperty.call(ids, item.parent)) {
+          this.readerError = 'failed to validate: czml object missing parent id'
+          return null
+        }
+      }
+      return results
+    }
   },
 }
 </script>

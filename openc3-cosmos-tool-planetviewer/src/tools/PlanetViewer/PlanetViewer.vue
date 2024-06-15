@@ -37,59 +37,56 @@
     <top-bar :menus="menus" :title="title" />
     <div style="max-height: 100%">
       <div id="cesiumContainer"></div>
-      <imagery-provider-dialog
-        v-model="imageryProviderDialog"
-        :url="imageryProviderUrl"
-        @alert="alertHandler"
-        @url="urlHandler"
-      />
-      <rewatch-dialog
-        v-model="rewatchDialog"
-        @alert="alertHandler"
-        @time="timeHandler"
-      />
-      <add-czml-dialog
-        v-model="czmlDialog"
-        @alert="alertHandler"
-        @load="czmlHandler"
-      />
-      <add-static-dialog
-        v-model="addStaticDialog"
-        @alert="alertHandler"
-        @create="createHandler"
-        :mode="mode"
-        :visuals="visuals"
-      />
-      <add-dynamic-dialog
-        v-model="addDynamicDialog"
-        @alert="alertHandler"
-        @create="createHandler"
-        :mode="mode"
-        :visuals="visuals"
-      />
-      <visuals-dialog
-        v-model="viewDialog"
-        @alert="alertHandler"
-        @update="updateHandler"
-        :mode="mode"
-        :visuals="visuals"
-      />
-      <open-config-dialog
-        v-if="openConfig"
-        v-model="openConfig"
-        :tool="toolName"
-        @success="openConfiguration($event)"
-      />
-      <save-config-dialog
-        v-if="saveConfig"
-        v-model="saveConfig"
-        :tool="toolName"
-        @success="saveConfiguration($event)"
-      />
-      <footer>
-        <v-divider></v-divider>
-      </footer>
     </div>
+    <imagery-provider-dialog
+      v-model="imageryProviderDialog"
+      :url="imageryProviderUrl"
+      @alert="alertHandler"
+      @url="urlHandler"
+    />
+    <rewatch-dialog
+      v-model="rewatchDialog"
+      @alert="alertHandler"
+      @time="timeHandler"
+    />
+    <add-czml-dialog
+      v-model="czmlDialog"
+      @alert="alertHandler"
+      @load="czmlHandler"
+    />
+    <add-static-dialog
+      v-model="addStaticDialog"
+      @alert="alertHandler"
+      @create="createHandler"
+      :mode="mode"
+      :visuals="visuals"
+    />
+    <add-dynamic-dialog
+      v-model="addDynamicDialog"
+      @alert="alertHandler"
+      @create="createHandler"
+      :mode="mode"
+      :visuals="visuals"
+    />
+    <visuals-dialog
+      v-model="viewDialog"
+      @alert="alertHandler"
+      @update="updateHandler"
+      :mode="mode"
+      :visuals="visuals"
+    />
+    <open-config-dialog
+      v-if="openConfig"
+      v-model="openConfig"
+      :tool="toolName"
+      @success="openConfiguration($event)"
+    />
+    <save-config-dialog
+      v-if="saveConfig"
+      v-model="saveConfig"
+      :tool="toolName"
+      @success="saveConfiguration($event)"
+    />
   </div>
 </template>
 
@@ -349,18 +346,10 @@ export default {
       // console.log(event)
       this.imageryProviderUrl = event
     },
-    createCartesianHandler: function (x, y, z) {
-      return new Cartesian3(x, y, z)
-    },
-    createCartesianFromDegreesHandler: function (longitude, latitude, height) {
-      return Cartesian3.fromDegrees(longitude, latitude, height)
-    },
-    createCartesianFromRadiansHandler: function (longitude, latitude, height) {
-      return Cartesian3.fromRadians(longitude, latitude, height)
-    },
-    createHandler: function (event) {
-      this.eventHandlerFunctions['create'][event.type](event)
-    },
+    createCartesianHandler: (x, y, z) => new Cartesian3(x, y, z),
+    createCartesianFromDegreesHandler: (longitude, latitude, height) => Cartesian3.fromDegrees(longitude, latitude, height),
+    createCartesianFromRadiansHandler: (longitude, latitude, height) => Cartesian3.fromRadians(longitude, latitude, height),
+    createHandler: (event) => this.eventHandlerFunctions.create[event.type](event),
     czmlHandler: function (event) {
       // console.log(event)
       try {
@@ -499,7 +488,7 @@ export default {
         ],
       }
       OpenC3Auth.updateToken(OpenC3Auth.defaultMinValidity).then(() => {
-        visual['subscription'] = this.subscription.perform('add', {
+        visual.subscription = this.subscription.perform('add', {
           scope: window.openc3Scope,
           token: localStorage.openc3Token,
           mode: 'DECOM',
@@ -556,21 +545,21 @@ export default {
     },
     received: function (data) {
       this.cable.recordPing()
-      data.forEach((event) => {
+      for (const event of data) {
         this.updateVisuals(event)
-      })
+      }
     },
     updateHandler: function (event) {
       const visual = this.typeHandlerArray[event.visualType].find((visual) => event.visualName === visual.name)
-      this.eventHandlerFunctions['delete'][event.visualType](visual)
+      this.eventHandlerFunctions.delete[event.visualType](visual)
     },
     deleteVisual: function (visual) {
-      this.eventHandlerFunctions['delete'][visual.type](visual)
+      this.eventHandlerFunctions.delete[visual.type](visual)
     },
     deleteDynamicVisual: function (visual) {
-      var index = this.config.indexOf(visual.name)
+      let index = this.config.indexOf(visual.name)
       this.config.splice(index, 1)
-      var index = this.dynamicVisuals.indexOf(visual)
+      index = this.dynamicVisuals.indexOf(visual)
       this.dynamicVisuals.splice(index, 1)
       this.dataSource.entities.remove(this.dataSource.entities.getById(visual.name))
       OpenC3Auth.updateToken(OpenC3Auth.defaultMinValidity).then(() => {
@@ -582,9 +571,9 @@ export default {
       })
     },
     deleteStaticVisual: function (visual) {
-      var index = this.config.indexOf(visual.name)
+      let index = this.config.indexOf(visual.name)
       this.config.splice(index, 1)
-      var index = this.staticVisuals.indexOf(visual)
+      index = this.staticVisuals.indexOf(visual)
       this.staticVisuals.splice(index, 1)
       this.dataSource.entities.remove(this.dataSource.entities.getById(visual.name))
     },
@@ -596,7 +585,7 @@ export default {
           this.dataSource.entities
             .getById(visual.name)
             .position.addSample(
-              new JulianDate.fromDate(new Date(event['__time'] / 1_000_000)),
+              new JulianDate.fromDate(new Date(event.__time / 1_000_000)),
               this.convertHandlerFuntions[visual.cartesianOrRadiansOrDegrees](
                 event[visual.items[0]],
                 event[visual.items[1]],
@@ -607,17 +596,17 @@ export default {
       })
     },
     clearVisuals: function () {
-      for (let visual of this.dynamicVisuals) {
+      for (const visual of this.dynamicVisuals) {
         this.deleteVisual(visual)
       }
-      for (let visual of this.staticVisuals) {
+      for (const visual of this.staticVisuals) {
         this.deleteVisual(visual)
       }
       this.dynamicVisuals = []
       this.staticVisuals = []
     },
     openConfiguration: function (name) {
-      localStorage['lastconfig__planet_viewer'] = name
+      localStorage.lastconfig__planet_viewer = name
       new OpenC3Api()
         .load_config(this.toolName, name)
         .then((response) => {
@@ -628,9 +617,9 @@ export default {
           this.stopDateTime = config.stop
           this.mode = ''
           this.updateMode(config.mode)
-          config.config.forEach((event) => {
+          for (const event of config.config) {
             this.createHandler(event)
-          })
+          }
           this.alertHandler({
             text: `Loading configuartion: ${name}`,
             type: 'success',
@@ -646,7 +635,7 @@ export default {
         })
     },
     saveConfiguration: function (name) {
-      localStorage['lastconfig__planet_viewer'] = name
+      localStorage.lastconfig__planet_viewer = name
       const config = {
         mode: this.mode,
         imageryProviderUrl: this.imageryProviderUrl,
@@ -660,7 +649,7 @@ export default {
         .then((response) => {
           // console.log(response)
           this.alertHandler({
-            text: `Saved configuartion: ${name}`,
+            text: `Saved configuration: ${name}`,
             type: 'success',
           })
         })

@@ -133,9 +133,7 @@ export default {
       })
   },
   computed: {
-    error: function () {
-      return null
-    },
+    error: () => null,
     show: {
       get() {
         return this.value

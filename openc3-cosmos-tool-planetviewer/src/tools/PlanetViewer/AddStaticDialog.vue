@@ -264,9 +264,9 @@ export default {
         color: this.color,
         description: this.visualDescription,
         cartesianOrRadiansOrDegrees: this.cartesianOrRadiansOrDegrees,
-        latitude: parseFloat(this.latitude),
-        longitude: parseFloat(this.longitude),
-        altitude: parseFloat(this.altitude),
+        latitude: Number.parseFloat(this.latitude),
+        longitude: Number.parseFloat(this.longitude),
+        altitude: Number.parseFloat(this.altitude),
       }
     },
     error: function () {
@@ -274,11 +274,11 @@ export default {
         return 'New visual must have a name and description'
       }
       // Traditional for loop so we can return if we find a match
-      this.visuals.forEach((visual) => {
-        if (visual.name == this.visualName) {
+      for (const visual of this.visuals) {
+        if (visual.name === this.visualName) {
           return `Visual duplication found, ${visual.name}`
         }
-      })
+      }
       return null
     },
     show: {

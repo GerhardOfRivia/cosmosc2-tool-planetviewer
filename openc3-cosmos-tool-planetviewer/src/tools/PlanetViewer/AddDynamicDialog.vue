@@ -396,16 +396,16 @@ export default {
         return 'New dynamic visual must have a name.'
       }
       // Traditional for loop so we can return if we find a match
-      this.visuals.forEach((visual) => {
+      for (const visual of this.visuals) {
         if (
-          (visual.itemX == this.selectedItemX &&
-            visual.itemY == this.selectedItemY &&
-            visual.itemZ == this.selectedItemZ) ||
-          visual.name == this.visualName
+          (visual.itemX === this.selectedItemX &&
+            visual.itemY === this.selectedItemY &&
+            visual.itemZ === this.selectedItemZ) ||
+            visual.name === this.visualName
         ) {
           return `Visual duplication found, ${visual.name}`
         }
-      })
+      }
       return null
     },
     event: function () {
@@ -475,7 +475,7 @@ export default {
       this.updateItems()
     },
     itemNameChanged(value, point) {
-      this.tlm_item_list_items.forEach((item) => {
+      for (const item of this.tlm_item_list_items) {
         if (value === item.name) {
           // console.log(item)
           this[`selectedItem${point}`] = {
@@ -485,7 +485,7 @@ export default {
           }
           return
         }
-      })
+      }
     },
   },
 }
