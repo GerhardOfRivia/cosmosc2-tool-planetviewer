@@ -1,8 +1,8 @@
-// 
+//
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 const Webpack = require('webpack')
-// 
-const cesiumContext = '../../node_modules';
+//
+const cesiumContext = '../../node_modules'
 
 module.exports = {
   publicPath: '/tools/planetviewer',
@@ -31,10 +31,10 @@ module.exports = {
       new CopyWebpackPlugin({
         // Copy Cesium Assets, Widgets, and Workers to a static directory
         patterns: [
-          { from: 'cesium/Build/Cesium/Workers/', to: 'Workers', context: cesiumContext, },
-          { from: 'cesium/Build/Cesium/ThirdParty/', to: 'ThirdParty', context: cesiumContext, },
-          { from: 'cesium/Build/Cesium/Assets/', to: 'Assets', context: cesiumContext, },
-          { from: 'cesium/Build/Cesium/Widgets/', to: 'Widgets', context: cesiumContext, },
+          { from: 'cesium/Build/Cesium/Workers/', to: 'Workers', context: cesiumContext },
+          { from: 'cesium/Build/Cesium/ThirdParty/', to: 'ThirdParty', context: cesiumContext },
+          { from: 'cesium/Build/Cesium/Assets/', to: 'Assets', context: cesiumContext },
+          { from: 'cesium/Build/Cesium/Widgets/', to: 'Widgets', context: cesiumContext },
         ],
       }),
       new Webpack.DefinePlugin({
@@ -58,6 +58,6 @@ module.exports = {
           rootMode: 'upward',
         }
       })
-    config.externals(['vue', 'vuetify', 'vuex', 'vue-router'])      
+    config.externals(['vue', 'vuetify', 'vuex', 'vue-router'])
   },
 }

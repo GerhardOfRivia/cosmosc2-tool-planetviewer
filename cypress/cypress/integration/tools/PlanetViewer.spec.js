@@ -17,7 +17,7 @@
 # copyright holder
 */
 
-import { format, add } from 'date-fns'
+import { add, format } from 'date-fns'
 
 function formatTime(date) {
   return format(date, 'HH:mm:ss')
@@ -37,7 +37,7 @@ describe('PlanetViewer', () => {
     //
   })
 
-  it('check visuals menus', function () {
+  it('check visuals menus', () => {
     cy.wait(4000)
     cy.get('[data-test="Planet Viewer-Cesium"]').click({ force: true })
     cy.wait(100)
@@ -48,8 +48,8 @@ describe('PlanetViewer', () => {
     cy.get('.footer-text').click({ force: true })
     cy.wait(100)
   })
-  
-  it('check add static dialog', function () {
+
+  it('check add static dialog', () => {
     cy.wait(4000)
     cy.get('[data-test="Planet Viewer-Cesium"]').click({ force: true })
     cy.wait(100)
@@ -59,7 +59,7 @@ describe('PlanetViewer', () => {
     cy.wait(100)
   })
 
-  it('check add static dialog and save config', function () {
+  it('check add static dialog and save config', () => {
     cy.wait(4000)
     cy.get('[data-test="Planet Viewer-Cesium"]').click({ force: true })
     cy.wait(100)
@@ -81,12 +81,11 @@ describe('PlanetViewer', () => {
     cy.wait(100)
   })
 
-  it('check reset', function () {
+  it('check reset', () => {
     cy.wait(4000)
     cy.get('[data-test="Planet Viewer-Cesium"]').click({ force: true })
     cy.wait(100)
     cy.get('[data-test="Planet Viewer-Cesium-Reset Viewer"]').click({ force: true })
     cy.wait(4000)
   })
-
 })

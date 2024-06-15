@@ -94,7 +94,7 @@
 </template>
 
 <script>
-import { validate } from 'webpack';
+import { validate } from 'webpack'
 
 export default {
   props: {
@@ -172,7 +172,7 @@ export default {
         this.readerError = 'failed to validate: czml document not formatted in an Array'
         return null
       }
-      const ids = {};
+      const ids = {}
       for (const item of results) {
         if (!!item.id && !!item.name) {
           this.readerError = 'failed to validate: czml object missing id and name fields'
@@ -185,7 +185,7 @@ export default {
         }
       }
       return results
-    }
+    },
   },
 }
 </script>

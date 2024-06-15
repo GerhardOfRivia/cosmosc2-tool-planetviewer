@@ -401,7 +401,7 @@ export default {
           (visual.itemX === this.selectedItemX &&
             visual.itemY === this.selectedItemY &&
             visual.itemZ === this.selectedItemZ) ||
-            visual.name === this.visualName
+          visual.name === this.visualName
         ) {
           return `Visual duplication found, ${visual.name}`
         }

@@ -347,8 +347,10 @@ export default {
       this.imageryProviderUrl = event
     },
     createCartesianHandler: (x, y, z) => new Cartesian3(x, y, z),
-    createCartesianFromDegreesHandler: (longitude, latitude, height) => Cartesian3.fromDegrees(longitude, latitude, height),
-    createCartesianFromRadiansHandler: (longitude, latitude, height) => Cartesian3.fromRadians(longitude, latitude, height),
+    createCartesianFromDegreesHandler: (longitude, latitude, height) =>
+      Cartesian3.fromDegrees(longitude, latitude, height),
+    createCartesianFromRadiansHandler: (longitude, latitude, height) =>
+      Cartesian3.fromRadians(longitude, latitude, height),
     createHandler: (event) => this.eventHandlerFunctions.create[event.type](event),
     czmlHandler: function (event) {
       // console.log(event)
