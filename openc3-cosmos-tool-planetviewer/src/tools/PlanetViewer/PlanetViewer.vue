@@ -346,12 +346,21 @@ export default {
       // console.log(event)
       this.imageryProviderUrl = event
     },
-    createCartesianHandler: (x, y, z) => new Cartesian3(x, y, z),
-    createCartesianFromDegreesHandler: (longitude, latitude, height) =>
-      Cartesian3.fromDegrees(longitude, latitude, height),
-    createCartesianFromRadiansHandler: (longitude, latitude, height) =>
-      Cartesian3.fromRadians(longitude, latitude, height),
-    createHandler: (event) => this.eventHandlerFunctions.create[event.type](event),
+    // biome-ignore lint/complexity/useArrowFunction:
+    createCartesianHandler: function (x, y, z) {
+      return new Cartesian3(x, y, z)
+    },
+    // biome-ignore lint/complexity/useArrowFunction:
+    createCartesianFromDegreesHandler: function (longitude, latitude, height) {
+      return Cartesian3.fromDegrees(longitude, latitude, height)
+    },
+    // biome-ignore lint/complexity/useArrowFunction:
+    createCartesianFromRadiansHandler: function (longitude, latitude, height) {
+      return Cartesian3.fromRadians(longitude, latitude, height)
+    },
+    createHandler: function (event) {
+      this.eventHandlerFunctions.create[event.type](event)
+    },
     czmlHandler: function (event) {
       // console.log(event)
       try {
